@@ -155,7 +155,7 @@ Este repositório tem como objetivo apresentar relatórios avançados construíd
     WHERE LOWER(customers.country) = 'uk'
     GROUP BY customers.contact_name
     HAVING SUM(order_details.unit_price * order_details.quantity * (1.0 - order_details.discount)) > 1000;
-```
+    ```
 
 ## Contexto
 
