@@ -232,4 +232,4 @@ Configure um novo servidor no PgAdmin:
     
     ```
     docker-compose down -v
-    ```# Northwind-SQL-Analytics
+    ```
