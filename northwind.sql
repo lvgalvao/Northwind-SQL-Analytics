@@ -4009,11 +4009,25 @@ FROM clientes_para_marketing
 WHERE group_number >= 3;
 
 CREATE VIEW top_10_products AS
-SELECT products.product_name, SUM(order_details.unit_price * order_details.quantity * (1.0 - order_details.discount)) AS sales
-FROM products
-INNER JOIN order_details ON order_details.product_id = products.product_id
-GROUP BY products.product_name
-ORDER BY sales DESC;
+WITH product_sales AS (
+    SELECT 
+        products.product_name, 
+        SUM(order_details.unit_price * order_details.quantity * (1.0 - order_details.discount)) AS sales,
+        ROW_NUMBER() OVER (ORDER BY SUM(order_details.unit_price * order_details.quantity * (1.0 - order_details.discount)) DESC) AS rn
+    FROM 
+        products
+    INNER JOIN 
+        order_details ON order_details.product_id = products.product_id
+    GROUP BY 
+        products.product_name
+)
+SELECT 
+    product_name, 
+    sales
+FROM 
+    product_sales
+WHERE 
+    rn <= 10;
 
 CREATE VIEW uk_clients_who_pay_more_then_1000 AS
 SELECT customers.contact_name, SUM(order_details.unit_price * order_details.quantity * (1.0 - order_details.discount) * 100) / 100 AS payments
